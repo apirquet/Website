@@ -3,24 +3,21 @@ title: "SQL"
 output: html_document
 ---
 
-# Level one header
-## Level two header, smaller than the last
-### Level three header, smaller than that even
+## Filtering Columns and Rows
 
+With SQL, you can filter columns and rows by using SELECT and WHERE. Here's an example using the Lahman database. First, load the database, along with the package sqldf.
 
-If you type normally, the size is regular
+```{r message=FALSE, warning=FALSE}
+library(Lahman)
+library(sqldf)
+```
 
-* Item 1
-* Item 2
-* Item 3
-* Item 4
+If I wanted to see total homeruns for the 1927 Yankees, I could write the following query:
 
-column 1 | column 2
----|---
-Team 1 | National
-Team 2 | American
-Team 3 | National
-Team 4 | American
+```{r}
+query<-"select playerID,yearID,teamID,HR FROM Batting
+WHERE teamID='NYA' and yearID=1927"
+sqldf(query)
 
-<img src="lasagna.jpg" width="600"/>
+```
 
