@@ -15,9 +15,35 @@ library(sqldf)
 If I wanted to see total homeruns for the 1927 Yankees, I could write the following query:
 
 ```{r}
-query<-"select playerID,yearID,teamID,HR FROM Batting
+query<-"SELECT playerID,yearID,teamID,HR FROM Batting
 WHERE teamID='NYA' and yearID=1927"
 sqldf(query)
 
 ```
 
+We can also use greater than or less than symbols to narrow in our results. Lets look at a few examples. Say I wanted to find all instances where the Yankees hit 40 homeruns or more:
+
+```{r}
+query<-"SELECT playerID,yearID,teamID,HR FROM Batting
+WHERE teamID='NYA' and HR>=40"
+sqldf(query)
+
+```
+
+To find all the instances in history where a player had more than 40 homeruns, but less than 40 strikeouts, I would enter the following query:
+
+```{r}
+query<-"SELECT playerID,yearID,teamID,HR,SO FROM Batting
+WHERE HR>40 and SO<60"
+sqldf(query)
+
+```
+
+Say I wanted to look at a specific time period. For example, I want to find all instances of the Phillies hitting more than 30 homeruns in the 1970s:
+
+```{r}
+query<-"SELECT playerID,yearID,teamID,HR FROM Batting
+WHERE teamID='PHI' and yearID>=1970 and yearID<1980 and HR>30"
+sqldf(query)
+
+```
