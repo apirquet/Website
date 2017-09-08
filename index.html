@@ -125,7 +125,7 @@ $(document).ready(function () {
 <p>With SQL, you can filter columns and rows by using SELECT and WHERE. Here’s an example using the Lahman database. First, load the database, along with the package sqldf.</p>
 <pre class="r"><code>library(Lahman)
 library(sqldf)</code></pre>
-<p>If I wanted to see total homeruns for the 1927 Yankees, I could write the following query:</p>
+<p>If I wanted to see <strong>total homeruns</strong> for the 1927 Yankees, I could write the following query:</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,HR FROM Batting
 WHERE teamID='NYA' and yearID=1927&quot;
 sqldf(query)</code></pre>
@@ -155,7 +155,7 @@ sqldf(query)</code></pre>
 ## 23 shockur01   1927    NYA  0
 ## 24 thomamy01   1927    NYA  0
 ## 25  weraju01   1927    NYA  1</code></pre>
-<p>We can also use greater than or less than symbols to narrow in our results. Lets look at a few examples. Say I wanted to find all instances where the Yankees hit 40 homeruns or more:</p>
+<p>We can also use greater than or less than symbols to narrow in our results. Lets look at a few examples. Say I wanted to find all instances where the Yankees hit <strong>40 homeruns or more</strong>:</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,HR FROM Batting
 WHERE teamID='NYA' and HR&gt;=40&quot;
 sqldf(query)</code></pre>
@@ -190,7 +190,7 @@ sqldf(query)</code></pre>
 ## 28 rodrial01   2007    NYA 54
 ## 29 grandcu01   2011    NYA 41
 ## 30 grandcu01   2012    NYA 43</code></pre>
-<p>To find all the instances in history where a player had more than 40 homeruns, but less than 40 strikeouts, I would enter the following query:</p>
+<p>To find all the instances in history where a player had <strong>more than 40 homeruns</strong>, but <strong>less than 40 strikeouts</strong>, I would enter the following query:</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,HR,SO FROM Batting
 WHERE HR&gt;40 and SO&lt;60&quot;
 sqldf(query)</code></pre>
@@ -223,7 +223,7 @@ sqldf(query)</code></pre>
 ## 26 bondsba01   2004    SFN 45 41
 ## 27 pujolal01   2004    SLN 46 52
 ## 28 pujolal01   2006    SLN 49 50</code></pre>
-<p>Say I wanted to look at a specific time period. For example, I want to find all instances of the Phillies hitting more than 30 homeruns in the 1970s:</p>
+<p>Say I wanted to look at a <strong>specific time period</strong>. For example, I want to find all instances of the Phillies hitting more than 30 homeruns <strong>in the 1970s</strong>:</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,HR FROM Batting
 WHERE teamID='PHI' and yearID&gt;=1970 and yearID&lt;1980 and HR&gt;30&quot;
 sqldf(query)</code></pre>
@@ -242,7 +242,7 @@ sqldf(query)</code></pre>
 <h2>ORDER BY</h2>
 <div id="order-the-rows-of-your-output" class="section level4">
 <h4>Order the rows of your output</h4>
-<p>Let’s look at how we can organize these stats in a specific order. I want to find every instance of a player hitting more than 50 homeruns, but I want to order them by having the player with highest homerun total at the top:</p>
+<p>Let’s look at how we can organize these stats in a specific order. I want to find every instance of a player hitting more than 50 homeruns, but I want to order them by having the player with <strong>highest homerun total at the top</strong>:</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,teamID,yearID,HR FROM Batting
 WHERE HR&gt;50
 ORDER BY HR DESC&quot;
