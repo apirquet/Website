@@ -237,6 +237,11 @@ sqldf(query)</code></pre>
 ## 7 schmimi01   1977    PHI 38
 ## 8 luzingr01   1978    PHI 35
 ## 9 schmimi01   1979    PHI 45</code></pre>
+</div>
+<div id="order-by" class="section level2">
+<h2>ORDER BY</h2>
+<div id="order-the-rows-of-your-output" class="section level4">
+<h4>Order the rows of your output</h4>
 <p>Let’s look at how we can organize these stats in a specific order. I want to find every instance of a player hitting more than 50 homeruns, but I want to order them by having the player with highest homerun total at the top:</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,teamID,yearID,HR FROM Batting
 WHERE HR&gt;50
@@ -280,6 +285,7 @@ sqldf(query)</code></pre>
 ## 34  mayswi01    NY1   1955 51
 ## 35 fieldce01    DET   1990 51
 ## 36 jonesan01    ATL   2005 51</code></pre>
+</div>
 </div>
 
 

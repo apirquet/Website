@@ -48,6 +48,9 @@ sqldf(query)
 
 ```
 
+## ORDER BY 
+#### Order the rows of your output
+
 Let's look at how we can organize these stats in a specific order. I want to find every instance of a player hitting more than 50 homeruns, but I want to order them by having the player with highest homerun total at the top:
 
 ```{r}
