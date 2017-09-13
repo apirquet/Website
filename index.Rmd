@@ -73,7 +73,7 @@ sqldf(query)
 
 ```
 
-### Aggregatior
+### Aggregation
 
 We want to find all Babe Ruth's total homeruns 
 
@@ -105,6 +105,44 @@ query<-"SELECT playerID,avg(HR) FROM Batting
 GROUP BY playerID
 HAVING avg(HR)>30
 ORDER BY avg(HR) DESC"
+
+sqldf(query)
+
+```
+
+### Joins
+
+First and Last names, along with team, year, and homeruns. Player should be Babe Ruth. Find all instances of players hitting more than 50 homeruns. Include first and last names, team, year, and homeruns. It is important to eliminate ambiguity. Since we are using information from two tables (Batting and Master), we need to indicate where we want to draw the information from. For example, instead of writing WHERE playerID='ruthba01', we will need to indicate that we want to draw it from Batting.
+
+```{r}
+query<-"SELECT nameFIRST, nameLAST,teamID,yearID,HR 
+FROM Batting INNER JOIN Master
+ON Batting.playerID=Master.playerID
+WHERE Batting.playerID='ruthba01'"
+
+sqldf(query)
+
+```
+
+Find all instances of players hitting more than 50 homeruns. Include first and last names, team, year, and homeruns.
+
+```{r}
+query<-"SELECT nameFIRST, nameLAST,teamID,yearID,HR 
+FROM Batting INNER JOIN Master
+ON Batting.playerID=Master.playerID
+WHERE HR>50"
+
+sqldf(query)
+
+```
+
+Babe Ruth homeruns by season, with playerID, team name, year, and homeruns. The Teams table has some overlapping information with Batting. Both the Batting table and the Teams table have an yearID and HR column. Therefore, we need to indicate where we want to pull the information from. When we use "ON", we need to indicate what information is the same in both tables and eliminate a duplicate from both tables. This is why we write "ON Batting.teamID=Teams.teamID" etc. This will make sure not to duplicate the information from both the Batting table and the Teams table.
+
+```{r}
+query<-"SELECT playerID,name,Batting.yearID,Batting.HR 
+FROM Batting INNER JOIN Teams
+ON Batting.teamID=Teams.teamID AND Batting.yearID=Teams.yearID
+WHERE playerID='ruthba01'"
 
 sqldf(query)
 
