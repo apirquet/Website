@@ -148,3 +148,49 @@ sqldf(query)
 
 ```
 
+### Joining Multiple Tables
+
+Say we want to join the Batting table, Master table, and Teams tables all in one query. For example, we want to see Babe Ruth's first and last name, the year, homeruns and team name.
+
+```{r}
+query<-"SELECT nameFIRST,nameLAST,name,Batting.yearID,Batting.HR
+FROM (Batting INNER JOIN Master
+ON Batting.playerID=Master.playerID) INNER JOIN Teams
+ON Batting.teamID=Teams.teamID and Batting.yearID=Teams.yearID
+WHERE Batting.playerID='ruthba01'"
+
+sqldf(query)
+
+```
+
+Lets get the career homerun totals for players. Limit the display to just those that hit at least 600HR. Highest homerun totals at the top. First and last names, and HR total.
+
+
+```{r}
+query<-"SELECT nameFIRST,nameLAST,sum(HR)
+FROM Batting INNER JOIN Master
+ON Batting.playerID=Master.playerID
+GROUP BY Batting.playerID
+HAVING sum(HR)>=600
+ORDER BY sum(HR) DESC"
+
+sqldf(query)
+
+```
+
+List all players with the first name Bob who averaged more than one millin dollars in salary over their career. Include last names.
+
+
+```{r}
+query<-"SELECT nameFIRST,nameLAST,avg(salary)
+FROM Master INNER JOIN Salaries
+ON Master.playerID=Salaries.playerID
+WHERE nameFirst='Bob'
+GROUP BY Salaries.playerID
+HAVING avg(salary)>1000000
+ORDER BY avg(salary) DESC"
+
+sqldf(query)
+
+```
+
