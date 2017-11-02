@@ -5,14 +5,20 @@ output: html_document
 
 ## Filtering Columns and Rows
 
-With SQL, you can filter columns and rows by using SELECT and WHERE. Here's an example using the Lahman database. First, load the database, along with the package sqldf.
+With SQL, you can filter columns and rows by using SELECT and WHERE. Here's an example using the Lahman database. 
+
+First, load the database, along with the package sqldf.
 
 ```{r message=FALSE, warning=FALSE}
 library(Lahman)
 library(sqldf)
 ```
 
-If I wanted to see **total homeruns** for the 1927 Yankees, I could write the following query:
+Let's look at an example. 
+
+If I wanted to see **total homeruns** for the 1927 Yankees, I would have to extract data *FROM* the Batting table, and identify what specific data I want to limit my extraction to using the *WHERE* promt.
+
+In this instance, I would use the following query:
 
 ```{r}
 query<-"SELECT playerID,yearID,teamID,HR FROM Batting
@@ -21,7 +27,11 @@ sqldf(query)
 
 ```
 
-We can also use greater than or less than symbols to narrow in our results. Lets look at a few examples. Say I wanted to find all instances where the Yankees hit **40 homeruns or more**:
+## Greater Than, Less Than, or Equal To
+
+We can also use equal to (=), greater than (>), or less than (<) symbols to narrow in our results. Lets look at a few examples. 
+
+Say I wanted to find all instances where the Yankees hit **40 homeruns or more**:
 
 ```{r}
 query<-"SELECT playerID,yearID,teamID,HR FROM Batting
@@ -30,7 +40,7 @@ sqldf(query)
 
 ```
 
-To find all the instances in history where a player had **more than 40 homeruns**, but **less than 40 strikeouts**, I would enter the following query:
+To find all the instances in history where a player had **more than 40 homeruns** (HR), but **less than 40 strikeouts** (SO), I would enter the following query:
 
 ```{r}
 query<-"SELECT playerID,yearID,teamID,HR,SO FROM Batting
@@ -51,7 +61,11 @@ sqldf(query)
 ## ORDER BY 
 #### Order the rows of your output
 
-Let's look at how we can organize these stats in a specific order. I want to find every instance of a player hitting more than 50 homeruns, but I want to order them by having the player with **highest homerun total at the top**:
+Let's look at how we can organize these statistics in a specific order. 
+
+I want to find every instance of a player hitting more than 50 homeruns, but I want to *ORDER BY* having the player with **highest homerun total at the top**. To get the highest number at the top, we have to add *DESC* at the end of the *ORDER BY* prompt.
+
+The query should look something like this:
 
 ```{r}
 query<-"SELECT playerID,teamID,yearID,HR FROM Batting
@@ -62,7 +76,9 @@ sqldf(query)
 
 ```
 
-Find all instances of a player striking out less than 10 times. Make sure each player has had at least 400 at-bats (AB). Order by having least strikeouts at the top
+Let's look at an example where we do not use the *DESC* prompt.
+
+Say I wanted to find **all instances of a player striking out less than 10 times**. However, I want each player to have had **at least 400 at-bats (AB)**. I want to *ORDER BY* having the least amount of strike outs (SO) at the top.
 
 ```{r}
 query<-"SELECT playerID,yearID,teamID,SO,AB FROM Batting
@@ -73,9 +89,13 @@ sqldf(query)
 
 ```
 
-### Aggregation
+## Aggregation
 
-We want to find all Babe Ruth's total homeruns 
+Aggregation prompts allow us to find the sum *(sum)*, average *(avg)*, maximum *(max)*, or minimum *(min)* in a specific column. We do this by entering a query where we specify which column we want to apply the prompt to. For this to be effective, we have to use the *GROUP BY* prompt. This tells the program how we would like our information to be condensed.
+
+Let's try applying this. 
+
+Say we wanted to find all Babe Ruth's **total homeruns**. We would do this by writing in *sum(HR)*, followed by *GROUP BY* at the end of the query. 
 
 ```{r}
 query<-"SELECT playerID,sum(HR) FROM Batting
@@ -86,7 +106,11 @@ sqldf(query)
 
 ```
 
-Find all career homerun totals for all players, but limit the output to totals 600 or more. Order by career total.
+Another example of this uses a slightly different method of condensing information. In the following example, we will be using the prompt *HAVING*. This is essentially the same as the previous promt *WHERE*. However, it is used in instances where we are using aggregation prompts. 
+
+Let me explain. We use *WHERE* when we want to specify a yearID, playerID, etc. (e.g. WHERE yearID=1980). *WHERE* always comes before *GROUP BY*. We use *HAVING* when we want to specify a sum(colname), avg(colname), max(colname), or min(colmame). Let's look at an example of this.
+
+Let's find **all career homerun totals for all players**, but limit the output to **totals 600 or more**. Order by career homerun total.
 
 ```{r}
 query<-"SELECT playerID,sum(HR) FROM Batting
@@ -98,7 +122,7 @@ sqldf(query)
 
 ```
 
-Find the players who have averaged more than 30 homeruns per year throughout their career. Order them by having the highest average at the top.
+Here's another example. I want to find the players who have **averaged more than 30 homeruns per year** throughout their career. Order them by having the highest average at the top.
 
 ```{r}
 query<-"SELECT playerID,avg(HR) FROM Batting
@@ -110,9 +134,17 @@ sqldf(query)
 
 ```
 
-### Joins
+### INNER JOIN
 
-First and Last names, along with team, year, and homeruns. Player should be Babe Ruth. Find all instances of players hitting more than 50 homeruns. Include first and last names, team, year, and homeruns. It is important to eliminate ambiguity. Since we are using information from two tables (Batting and Master), we need to indicate where we want to draw the information from. For example, instead of writing WHERE playerID='ruthba01', we will need to indicate that we want to draw it from Batting.
+To join two tables together, we would have to use the prompt *INNER JOIN*. This prompt allows us to extract data from multiple tables at once. However, it is important to specify in your query where the information you want should be extracted from. 
+
+As an example, say we are using the Batting table and the Master table. We specify this by typing out the prompt like this: **Batting.colname**. To make sure that data isn't duplicated, we use the prompt *ON* and equate the colnames that overlap in each table to one another, like this: **ON Batting.colname=Master.colname**
+
+Let's look at a few examples.
+
+In the following query, we want to find:
+
+**First and Last names, along with team, year, and homeruns**. We want the player to be **Babe Ruth**. Find all instances of players hitting **more than 50 homeruns**. 
 
 ```{r}
 query<-"SELECT nameFIRST, nameLAST,teamID,yearID,HR 
@@ -124,7 +156,7 @@ sqldf(query)
 
 ```
 
-Find all instances of players hitting more than 50 homeruns. Include first and last names, team, year, and homeruns.
+In another example, we want to find all instances of players hitting **more than 50 homeruns**. Include **first and last names, team, year, and homeruns**.
 
 ```{r}
 query<-"SELECT nameFIRST, nameLAST,teamID,yearID,HR 
@@ -136,7 +168,11 @@ sqldf(query)
 
 ```
 
-Babe Ruth homeruns by season, with playerID, team name, year, and homeruns. The Teams table has some overlapping information with Batting. Both the Batting table and the Teams table have an yearID and HR column. Therefore, we need to indicate where we want to pull the information from. When we use "ON", we need to indicate what information is the same in both tables and eliminate a duplicate from both tables. This is why we write "ON Batting.teamID=Teams.teamID" etc. This will make sure not to duplicate the information from both the Batting table and the Teams table.
+Let's look at a final example. Here we will be using the Batting and Teams tables. The Teams table has some overlapping information with Batting. Therefore, we need to indicate where we want to pull the information from. 
+
+REMEMBER, when we use *ON*, we need to indicate what information is the same in both tables and eliminate duplicates.
+
+We want to find **Babe Ruth's homeruns by season**, with playerID, team name, year, and homeruns. 
 
 ```{r}
 query<-"SELECT playerID,name,Batting.yearID,Batting.HR 
@@ -150,7 +186,9 @@ sqldf(query)
 
 ### Joining Multiple Tables
 
-Say we want to join the Batting table, Master table, and Teams tables all in one query. For example, we want to see Babe Ruth's first and last name, the year, homeruns and team name.
+Say we want to join the Batting table, Master table, and Teams tables all in one query. To be able to specify the data without there being any confusion, we have to utilize parenthesis () between each joining of tables.
+
+For example, we want to see **Babe Ruth's first and last name, the year, homeruns and team name**.
 
 ```{r}
 query<-"SELECT nameFIRST,nameLAST,name,Batting.yearID,Batting.HR
@@ -163,7 +201,7 @@ sqldf(query)
 
 ```
 
-Lets get the career homerun totals for players. Limit the display to just those that hit at least 600HR. Highest homerun totals at the top. First and last names, and HR total.
+Here's another example. Let's get the career **homerun totals for players**. Limit the display to just those that hit **at least 600HR**. Order by highest homerun totals at the top. Make sure we add the **first and last names, and HR total**.
 
 
 ```{r}
@@ -178,7 +216,9 @@ sqldf(query)
 
 ```
 
-List all players with the first name Bob who averaged more than one millin dollars in salary over their career. Include last names.
+Here's a great example of what we talked about earlier with *WHERE* and *HAVING*. In this eample, we want to list **all players with the first name Bob** who have **averaged more than one millin dollars in salary** over their career. We want to include last names.
+
+REMEMBER, *WHERE* before *GROUP BY* and *HAVING* (avg, sum, max, min) after.
 
 
 ```{r}

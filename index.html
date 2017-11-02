@@ -122,10 +122,13 @@ $(document).ready(function () {
 
 <div id="filtering-columns-and-rows" class="section level2">
 <h2>Filtering Columns and Rows</h2>
-<p>With SQL, you can filter columns and rows by using SELECT and WHERE. Here’s an example using the Lahman database. First, load the database, along with the package sqldf.</p>
+<p>With SQL, you can filter columns and rows by using SELECT and WHERE. Here’s an example using the Lahman database.</p>
+<p>First, load the database, along with the package sqldf.</p>
 <pre class="r"><code>library(Lahman)
 library(sqldf)</code></pre>
-<p>If I wanted to see <strong>total homeruns</strong> for the 1927 Yankees, I could write the following query:</p>
+<p>Let’s look at an example.</p>
+<p>If I wanted to see <strong>total homeruns</strong> for the 1927 Yankees, I would have to extract data <em>FROM</em> the Batting table, and identify what specific data I want to limit my extraction to using the <em>WHERE</em> promt.</p>
+<p>In this instance, I would use the following query:</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,HR FROM Batting
 WHERE teamID='NYA' and yearID=1927&quot;
 sqldf(query)</code></pre>
@@ -155,7 +158,11 @@ sqldf(query)</code></pre>
 ## 23 shockur01   1927    NYA  0
 ## 24 thomamy01   1927    NYA  0
 ## 25  weraju01   1927    NYA  1</code></pre>
-<p>We can also use greater than or less than symbols to narrow in our results. Lets look at a few examples. Say I wanted to find all instances where the Yankees hit <strong>40 homeruns or more</strong>:</p>
+</div>
+<div id="greater-than-less-than-or-equal-to" class="section level2">
+<h2>Greater Than, Less Than, or Equal To</h2>
+<p>We can also use equal to (=), greater than (&gt;), or less than (&lt;) symbols to narrow in our results. Lets look at a few examples.</p>
+<p>Say I wanted to find all instances where the Yankees hit <strong>40 homeruns or more</strong>:</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,HR FROM Batting
 WHERE teamID='NYA' and HR&gt;=40&quot;
 sqldf(query)</code></pre>
@@ -190,7 +197,7 @@ sqldf(query)</code></pre>
 ## 28 rodrial01   2007    NYA 54
 ## 29 grandcu01   2011    NYA 41
 ## 30 grandcu01   2012    NYA 43</code></pre>
-<p>To find all the instances in history where a player had <strong>more than 40 homeruns</strong>, but <strong>less than 40 strikeouts</strong>, I would enter the following query:</p>
+<p>To find all the instances in history where a player had <strong>more than 40 homeruns</strong> (HR), but <strong>less than 40 strikeouts</strong> (SO), I would enter the following query:</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,HR,SO FROM Batting
 WHERE HR&gt;40 and SO&lt;60&quot;
 sqldf(query)</code></pre>
@@ -242,7 +249,9 @@ sqldf(query)</code></pre>
 <h2>ORDER BY</h2>
 <div id="order-the-rows-of-your-output" class="section level4">
 <h4>Order the rows of your output</h4>
-<p>Let’s look at how we can organize these stats in a specific order. I want to find every instance of a player hitting more than 50 homeruns, but I want to order them by having the player with <strong>highest homerun total at the top</strong>:</p>
+<p>Let’s look at how we can organize these statistics in a specific order.</p>
+<p>I want to find every instance of a player hitting more than 50 homeruns, but I want to <em>ORDER BY</em> having the player with <strong>highest homerun total at the top</strong>. To get the highest number at the top, we have to add <em>DESC</em> at the end of the <em>ORDER BY</em> prompt.</p>
+<p>The query should look something like this:</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,teamID,yearID,HR FROM Batting
 WHERE HR&gt;50
 ORDER BY HR DESC&quot;
@@ -285,7 +294,8 @@ sqldf(query)</code></pre>
 ## 34  mayswi01    NY1   1955 51
 ## 35 fieldce01    DET   1990 51
 ## 36 jonesan01    ATL   2005 51</code></pre>
-<p>Find all instances of a player striking out less than 10 times. Make sure each player has had at least 400 at-bats (AB). Order by having least strikeouts at the top</p>
+<p>Let’s look at an example where we do not use the <em>DESC</em> prompt.</p>
+<p>Say I wanted to find <strong>all instances of a player striking out less than 10 times</strong>. However, I want each player to have had <strong>at least 400 at-bats (AB)</strong>. I want to <em>ORDER BY</em> having the least amount of strike outs (SO) at the top.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,yearID,teamID,SO,AB FROM Batting
 WHERE SO&lt;10 and AB&gt;=400
 ORDER BY SO&quot;
@@ -358,9 +368,12 @@ sqldf(query)</code></pre>
 ## 64 boudrlo01   1948    CLE  9 560
 ## 65 mitchda01   1952    CLE  9 511</code></pre>
 </div>
-<div id="aggregation" class="section level3">
-<h3>Aggregation</h3>
-<p>We want to find all Babe Ruth’s total homeruns</p>
+</div>
+<div id="aggregation" class="section level2">
+<h2>Aggregation</h2>
+<p>Aggregation prompts allow us to find the sum <em>(sum)</em>, average <em>(avg)</em>, maximum <em>(max)</em>, or minimum <em>(min)</em> in a specific column. We do this by entering a query where we specify which column we want to apply the prompt to. For this to be effective, we have to use the <em>GROUP BY</em> prompt. This tells the program how we would like our information to be condensed.</p>
+<p>Let’s try applying this.</p>
+<p>Say we wanted to find all Babe Ruth’s <strong>total homeruns</strong>. We would do this by writing in <em>sum(HR)</em>, followed by <em>GROUP BY</em> at the end of the query.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,sum(HR) FROM Batting
 WHERE playerID='ruthba01'
 GROUP BY playerID&quot;
@@ -368,7 +381,9 @@ GROUP BY playerID&quot;
 sqldf(query)</code></pre>
 <pre><code>##   playerID sum(HR)
 ## 1 ruthba01     714</code></pre>
-<p>Find all career homerun totals for all players, but limit the output to totals 600 or more. Order by career total.</p>
+<p>Another example of this uses a slightly different method of condensing information. In the following example, we will be using the prompt <em>HAVING</em>. This is essentially the same as the previous promt <em>WHERE</em>. However, it is used in instances where we are using aggregation prompts.</p>
+<p>Let me explain. We use <em>WHERE</em> when we want to specify a yearID, playerID, etc. (e.g. WHERE yearID=1980). <em>WHERE</em> always comes before <em>GROUP BY</em>. We use <em>HAVING</em> when we want to specify a sum(colname), avg(colname), max(colname), or min(colmame). Let’s look at an example of this.</p>
+<p>Let’s find <strong>all career homerun totals for all players</strong>, but limit the output to <strong>totals 600 or more</strong>. Order by career homerun total.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,sum(HR) FROM Batting
 GROUP BY playerID
 HAVING sum(HR)&gt;=600
@@ -384,7 +399,7 @@ sqldf(query)</code></pre>
 ## 6 griffke02     630
 ## 7 thomeji01     612
 ## 8  sosasa01     609</code></pre>
-<p>Find the players who have averaged more than 30 homeruns per year throughout their career. Order them by having the highest average at the top.</p>
+<p>Here’s another example. I want to find the players who have <strong>averaged more than 30 homeruns per year</strong> throughout their career. Order them by having the highest average at the top.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,avg(HR) FROM Batting
 GROUP BY playerID
 HAVING avg(HR)&gt;30
@@ -405,10 +420,13 @@ sqldf(query)</code></pre>
 ## 11 rodrial01 31.63636
 ## 12 schmimi01 30.44444
 ## 13 abreujo02 30.33333</code></pre>
-</div>
-<div id="joins" class="section level3">
-<h3>Joins</h3>
-<p>First and Last names, along with team, year, and homeruns. Player should be Babe Ruth. Find all instances of players hitting more than 50 homeruns. Include first and last names, team, year, and homeruns. It is important to eliminate ambiguity. Since we are using information from two tables (Batting and Master), we need to indicate where we want to draw the information from. For example, instead of writing WHERE playerID=‘ruthba01’, we will need to indicate that we want to draw it from Batting.</p>
+<div id="inner-join" class="section level3">
+<h3>INNER JOIN</h3>
+<p>To join two tables together, we would have to use the prompt <em>INNER JOIN</em>. This prompt allows us to extract data from multiple tables at once. However, it is important to specify in your query where the information you want should be extracted from.</p>
+<p>As an example, say we are using the Batting table and the Master table. We specify this by typing out the prompt like this: <strong>Batting.colname</strong>. To make sure that data isn’t duplicated, we use the prompt <em>ON</em> and equate the colnames that overlap in each table to one another, like this: <strong>ON Batting.colname=Master.colname</strong></p>
+<p>Let’s look at a few examples.</p>
+<p>In the following query, we want to find:</p>
+<p><strong>First and Last names, along with team, year, and homeruns</strong>. We want the player to be <strong>Babe Ruth</strong>. Find all instances of players hitting <strong>more than 50 homeruns</strong>.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT nameFIRST, nameLAST,teamID,yearID,HR 
 FROM Batting INNER JOIN Master
 ON Batting.playerID=Master.playerID
@@ -438,7 +456,7 @@ sqldf(query)</code></pre>
 ## 20      Babe     Ruth    NYA   1933 34
 ## 21      Babe     Ruth    NYA   1934 22
 ## 22      Babe     Ruth    BSN   1935  6</code></pre>
-<p>Find all instances of players hitting more than 50 homeruns. Include first and last names, team, year, and homeruns.</p>
+<p>In another example, we want to find all instances of players hitting <strong>more than 50 homeruns</strong>. Include <strong>first and last names, team, year, and homeruns</strong>.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT nameFIRST, nameLAST,teamID,yearID,HR 
 FROM Batting INNER JOIN Master
 ON Batting.playerID=Master.playerID
@@ -482,7 +500,9 @@ sqldf(query)</code></pre>
 ## 34      Alex Rodriguez    NYA   2007 54
 ## 35      Jose  Bautista    TOR   2010 54
 ## 36     Chris     Davis    BAL   2013 53</code></pre>
-<p>Babe Ruth homeruns by season, with playerID, team name, year, and homeruns. The Teams table has some overlapping information with Batting. Both the Batting table and the Teams table have an yearID and HR column. Therefore, we need to indicate where we want to pull the information from. When we use “ON”, we need to indicate what information is the same in both tables and eliminate a duplicate from both tables. This is why we write “ON Batting.teamID=Teams.teamID” etc. This will make sure not to duplicate the information from both the Batting table and the Teams table.</p>
+<p>Let’s look at a final example. Here we will be using the Batting and Teams tables. The Teams table has some overlapping information with Batting. Therefore, we need to indicate where we want to pull the information from.</p>
+<p>REMEMBER, when we use <em>ON</em>, we need to indicate what information is the same in both tables and eliminate duplicates.</p>
+<p>We want to find <strong>Babe Ruth’s homeruns by season</strong>, with playerID, team name, year, and homeruns.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT playerID,name,Batting.yearID,Batting.HR 
 FROM Batting INNER JOIN Teams
 ON Batting.teamID=Teams.teamID AND Batting.yearID=Teams.yearID
@@ -515,7 +535,8 @@ sqldf(query)</code></pre>
 </div>
 <div id="joining-multiple-tables" class="section level3">
 <h3>Joining Multiple Tables</h3>
-<p>Say we want to join the Batting table, Master table, and Teams tables all in one query. For example, we want to see Babe Ruth’s first and last name, the year, homeruns and team name.</p>
+<p>Say we want to join the Batting table, Master table, and Teams tables all in one query. To be able to specify the data without there being any confusion, we have to utilize parenthesis () between each joining of tables.</p>
+<p>For example, we want to see <strong>Babe Ruth’s first and last name, the year, homeruns and team name</strong>.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT nameFIRST,nameLAST,name,Batting.yearID,Batting.HR
 FROM (Batting INNER JOIN Master
 ON Batting.playerID=Master.playerID) INNER JOIN Teams
@@ -546,7 +567,7 @@ sqldf(query)</code></pre>
 ## 20      Babe     Ruth New York Yankees   1933 34
 ## 21      Babe     Ruth New York Yankees   1934 22
 ## 22      Babe     Ruth    Boston Braves   1935  6</code></pre>
-<p>Lets get the career homerun totals for players. Limit the display to just those that hit at least 600HR. Highest homerun totals at the top. First and last names, and HR total.</p>
+<p>Here’s another example. Let’s get the career <strong>homerun totals for players</strong>. Limit the display to just those that hit <strong>at least 600HR</strong>. Order by highest homerun totals at the top. Make sure we add the <strong>first and last names, and HR total</strong>.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT nameFIRST,nameLAST,sum(HR)
 FROM Batting INNER JOIN Master
 ON Batting.playerID=Master.playerID
@@ -564,7 +585,8 @@ sqldf(query)</code></pre>
 ## 6       Ken   Griffey     630
 ## 7       Jim     Thome     612
 ## 8     Sammy      Sosa     609</code></pre>
-<p>List all players with the first name Bob who averaged more than one millin dollars in salary over their career. Include last names.</p>
+<p>Here’s a great example of what we talked about earlier with <em>WHERE</em> and <em>HAVING</em>. In this eample, we want to list <strong>all players with the first name Bob</strong> who have <strong>averaged more than one millin dollars in salary</strong> over their career. We want to include last names.</p>
+<p>REMEMBER, <em>WHERE</em> before <em>GROUP BY</em> and <em>HAVING</em> (avg, sum, max, min) after.</p>
 <pre class="r"><code>query&lt;-&quot;SELECT nameFIRST,nameLAST,avg(salary)
 FROM Master INNER JOIN Salaries
 ON Master.playerID=Salaries.playerID
